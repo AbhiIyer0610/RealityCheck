@@ -1,0 +1,21 @@
+MERIDIAN DOCUMENT INTAKE
+Production Configuration Snapshot
+Document ID: DEPLOY-PROD-2026-10-20 | Captured: 2026-10-20 18:30 UTC | Environment: production
+DEMO DATA NOTICE: Entire document is fictional and created for software demonstration.
+
+Captured environment values:
+WORKER_TIMEOUT_SECONDS=60
+RETRY_ON_TIMEOUT=true
+MAX_TIMEOUT_RETRIES=3
+RETRY_BACKOFF_SECONDS=30
+MAX_UPLOAD_SIZE_MB=100
+JOB_STATUS_POLL_INTERVAL_SECONDS=2
+
+Deployment metadata:
+Release label: mdi-2026.10-rc3
+Config bundle: production-worker-config-2026.10.20
+Capture method: deployment pipeline exported the configuration bundle after rollout.
+
+Interpretation note: This is a configuration snapshot. It records the values in the exported bundle but does not, by itself, prove that every live worker loaded the same values or that the configured behavior completed successfully at runtime.
+
+No runtime test results are included in this file.

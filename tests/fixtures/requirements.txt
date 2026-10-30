@@ -1,0 +1,57 @@
+REALITYCHECK DEMO SCENARIO
+Document: Upload Service — Requirements and Acceptance Criteria
+Version: 1.4
+Owner: Platform Engineering
+Status: Approved for implementation
+Environment: Production target
+Purpose: A controlled test document for demonstrating evidence-linked analysis in RealityCheck.
+
+IMPORTANT TEST NOTE
+This is synthetic demo data created to exercise the analysis UI. It does not describe a real production system. Statements below are intentionally mixed: some are requirements, some are constraints, and some are open questions. A requirement is not proof that implementation or runtime behavior satisfies it.
+
+SYSTEM CONTEXT
+The Upload Service accepts user-provided evidence files, stores them locally, creates an asynchronous processing job, and exposes job status through an API. The service is expected to be reliable, observable, and safe when handling malformed or unsupported input.
+
+REQUIREMENTS
+R-001 — Supported file types
+The service shall accept plain-text (.txt) and PDF (.pdf) evidence files. Other file types shall be rejected with a clear validation error.
+
+R-002 — Maximum upload size
+The maximum accepted file size shall be 80 MB per file in the production environment. The limit must be enforced before document extraction begins.
+
+R-003 — Processing timeout
+Document extraction shall have a hard processing timeout of 45 seconds per file. A timeout shall result in a terminal failed job state and a user-readable error.
+
+R-004 — Job status
+Every accepted upload shall receive a unique job identifier. The API shall expose queued, processing, completed, and failed states.
+
+R-005 — Retention
+Uploaded artifacts shall be retained for no longer than 7 days unless an approved retention exception is recorded.
+
+R-006 — Secrets and credentials
+The service shall not log API keys, authorization headers, or document contents. Error messages returned to users shall not include stack traces or local filesystem paths.
+
+R-007 — Evidence traceability
+Every finding shown to the user shall link to the source document and the relevant extracted evidence. If a conclusion is inferred rather than directly stated, the UI shall label it as inferred or uncertain.
+
+R-008 — Offline mode
+When the analysis provider is configured as offline, the UI shall clearly disclose that analysis is simulated and shall not present simulated output as a live model result.
+
+ACCEPTANCE TESTS
+AT-001: Upload a valid .txt file smaller than 80 MB. Expect HTTP 202 and a job identifier.
+AT-002: Upload a valid PDF smaller than 80 MB. Expect HTTP 202 and a job identifier.
+AT-003: Upload a .csv file. Expect a clear unsupported-type response; no processing job should be created.
+AT-004: Upload an 81 MB file. Expect rejection before extraction begins.
+AT-005: Submit a PDF fixture that takes longer than 45 seconds to extract. Expect a terminal failed job state and a user-readable timeout error.
+AT-006: Inspect logs using a synthetic API key. Confirm the key and document body are not present.
+AT-007: Open a finding and follow its source reference to the correct evidence excerpt.
+AT-008: Set ANALYSIS_PROVIDER=offline. Confirm the UI displays an explicit offline/simulated label.
+
+KNOWN OPEN QUESTIONS
+Q-001: Does “80 MB” mean decimal megabytes (80,000,000 bytes) or mebibytes (83,886,080 bytes)?
+Q-002: Should a retention exception require an expiry date and an approver?
+Q-003: Should a timed-out extraction be retried automatically, or should the user explicitly retry?
+Q-004: Should the upload limit be configurable per environment, and where should the effective runtime value be displayed?
+
+EXPECTED INTERPRETATION
+This requirements document establishes expected behavior only. It does not prove that any requirement is implemented or tested. Use it alongside the implementation notes and observations files in this demo pack to exercise cross-document comparison.

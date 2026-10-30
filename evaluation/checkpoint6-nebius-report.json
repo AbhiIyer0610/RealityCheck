@@ -1,0 +1,30 @@
+{
+  "benchmark_name": "RealityCheck comparison benchmark",
+  "benchmark_version": 1,
+  "provider": "nebius",
+  "scope_note": "Synthetic regression cases; results are a small curated regression signal, not a measure of real-world accuracy.",
+  "case_count": 1,
+  "counts": {
+    "TP": 0,
+    "FP": 0,
+    "TN": 0,
+    "FN": 1
+  },
+  "precision": 0.0,
+  "recall": 0.0,
+  "specificity": 0.0,
+  "finding_count_total": 0,
+  "citation_reference_validity": 1.0,
+  "results": [
+    {
+      "id": "checkpoint6-acceptance-expectation-is-not-a-result",
+      "description": "An acceptance test states an expected timeout outcome, while observations explicitly say the test was not run. Compare requirement and implementation/configuration without treating the expectation as an actual result.",
+      "expected_finding": true,
+      "detected_finding": false,
+      "result": "FN",
+      "finding_count": 0,
+      "citation_references_valid": true,
+      "finding_titles": []
+    }
+  ]
+}

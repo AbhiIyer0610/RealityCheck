@@ -1,0 +1,23 @@
+MERIDIAN DOCUMENT INTAKE
+Worker and Job Manager Implementation Design
+Document ID: DESIGN-INT-17 | Version: 0.9 | Status: Reviewed, implementation note | Date: 2026-10-18
+DEMO DATA NOTICE: Entire document is fictional and created for software demonstration.
+
+PROCESSING FLOW
+1. API accepts a file and creates a job record.
+2. Worker parses the file and emits extracted evidence.
+3. Worker timeout is configured to 60 seconds.
+4. When WorkerTimeout is raised, the job manager sets the state to RETRYING and schedules another attempt after 30 seconds.
+5. The job manager permits up to three timeout retries. The job may remain RETRYING while a retry is pending.
+6. The UI maps unclassified processing exceptions to the generic string “Processing failed.”
+
+UPLOAD VALIDATION
+The API upload validator currently allows files up to 100 MB. The design note says this limit was increased to support larger scanned documents. This document does not contain an approved change request replacing PRD-42's 50 MB requirement.
+
+VERIFICATION LIMITATION
+This design note describes intended code paths and configured behavior. It does not itself prove what a deployed process loaded, that timeout handling passed in a runtime test, or that the UI rendered a particular message during an actual timeout.
+
+IMPLEMENTATION OWNER NOTES
+- Review the 60-second timeout and retry policy against PRD-42 before release.
+- Confirm whether the 100 MB upload limit has an approved product change.
+- Add integration coverage for the timeout exception, persisted job state, API response, and user-facing message.

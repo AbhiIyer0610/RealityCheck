@@ -1,0 +1,36 @@
+UPLOAD SERVICE — TEST OBSERVATIONS
+Document: test-observations.txt
+Test run: DEMO-RUN-2026-10-27
+Environment: Staging
+Status: Partial manual test notes; not a complete acceptance report
+Purpose: Synthetic companion source for the RealityCheck demo.
+
+OBS-001 — Valid TXT upload
+A 2 KB .txt file was accepted. The API returned HTTP 202 and a job identifier. Job status reached completed. This test was run once.
+
+OBS-002 — Valid PDF upload
+A small text-based PDF was accepted and reached completed. No scanned-PDF fixture was included in this run.
+
+OBS-003 — Unsupported extension
+A .csv upload returned HTTP 400. The response included a validation message. No job identifier was observed in the response.
+
+OBS-004 — Upload size boundary
+A 52 MB test file was rejected by the staging upload route before extraction. The test did not try a file between 50 MB and 80 MB, so it does not establish the exact boundary in production.
+
+OBS-005 — Processing timeout
+No slow-extraction fixture was run. The 45-second acceptance criterion remains unverified by this observation set.
+
+OBS-006 — Log redaction
+The log review used a synthetic API key. The key was not found in the sampled application log lines. Authorization-header coverage and document-body logging were not tested.
+
+OBS-007 — Evidence traceability
+A reviewer opened one candidate finding and reached a source document. The reviewer did not record a line-by-line check that the displayed excerpt was the exact supporting evidence.
+
+OBS-008 — Offline provider disclosure
+The staging UI displayed an “Offline demo — simulated analysis” label during this run.
+
+OBS-009 — Retention cleanup
+No retention cleanup execution was observed during this test run. The configured retention duration remains unverified by runtime observation.
+
+IMPORTANT
+Observations describe only the specific tests performed. A missing test is not a failed test, and a single successful test does not prove all cases are correct.

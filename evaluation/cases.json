@@ -1,0 +1,172 @@
+[
+  {
+    "id": "upload-limit-contradiction",
+    "description": "Requirement and runtime configuration state different hard upload limits.",
+    "expected_finding": true,
+    "documents": [
+      {
+        "filename": "requirements.txt",
+        "evidence_type": "requirement",
+        "text": "REQUIREMENTS\nR-002: The maximum upload size is 80 MB by default."
+      },
+      {
+        "filename": "runtime-config.txt",
+        "evidence_type": "configuration",
+        "text": "CONFIGURATION\nMAX_UPLOAD_SIZE_MB=50\nThe maximum upload size is 50 MB."
+      }
+    ]
+  },
+  {
+    "id": "equivalent-binary-units",
+    "description": "Equivalent file-size values use MiB and GiB-style binary units.",
+    "expected_finding": false,
+    "documents": [
+      {
+        "filename": "spec.txt",
+        "evidence_type": "requirement",
+        "text": "The maximum upload size is 1024 MiB."
+      },
+      {
+        "filename": "config.txt",
+        "evidence_type": "configuration",
+        "text": "The maximum upload size is 1 GiB."
+      }
+    ]
+  },
+  {
+    "id": "warning-vs-hard-limit",
+    "description": "A warning threshold differs from a maximum limit but the values are not contradictory by themselves.",
+    "expected_finding": false,
+    "documents": [
+      {
+        "filename": "ux-spec.txt",
+        "evidence_type": "requirement",
+        "text": "Show a warning threshold when an upload reaches 75 MB."
+      },
+      {
+        "filename": "runtime-config.txt",
+        "evidence_type": "configuration",
+        "text": "The maximum upload size is 80 MB."
+      }
+    ]
+  },
+  {
+    "id": "environment-scope",
+    "description": "Different values are explicitly scoped to development and production.",
+    "expected_finding": false,
+    "documents": [
+      {
+        "filename": "dev-config.txt",
+        "evidence_type": "configuration",
+        "text": "Development environment maximum upload size is 20 MB."
+      },
+      {
+        "filename": "prod-config.txt",
+        "evidence_type": "configuration",
+        "text": "Production environment maximum upload size is 80 MB."
+      }
+    ]
+  },
+  {
+    "id": "version-scope",
+    "description": "Different values are explicitly associated with different versions.",
+    "expected_finding": false,
+    "documents": [
+      {
+        "filename": "release-v1.txt",
+        "evidence_type": "reference",
+        "text": "Version 1 maximum upload size is 50 MB."
+      },
+      {
+        "filename": "release-v2.txt",
+        "evidence_type": "reference",
+        "text": "Version 2 maximum upload size is 80 MB."
+      }
+    ]
+  },
+  {
+    "id": "retention-contradiction",
+    "description": "Two sources specify different retention periods for the same retention topic.",
+    "expected_finding": true,
+    "documents": [
+      {
+        "filename": "policy.txt",
+        "evidence_type": "requirement",
+        "text": "The audit log retention period is 30 days."
+      },
+      {
+        "filename": "runtime.txt",
+        "evidence_type": "configuration",
+        "text": "The configured retention period is 7 days."
+      }
+    ]
+  },
+  {
+    "id": "same-upload-limit",
+    "description": "Two sources agree on the same upload limit.",
+    "expected_finding": false,
+    "documents": [
+      {
+        "filename": "spec.txt",
+        "evidence_type": "requirement",
+        "text": "The maximum upload size is 50 MB."
+      },
+      {
+        "filename": "config.txt",
+        "evidence_type": "configuration",
+        "text": "The maximum upload size is 50 MB."
+      }
+    ]
+  },
+  {
+    "id": "timeout-contradiction",
+    "description": "Two sources specify materially different timeout values.",
+    "expected_finding": true,
+    "documents": [
+      {
+        "filename": "requirements.txt",
+        "evidence_type": "requirement",
+        "text": "The request timeout is 30 seconds."
+      },
+      {
+        "filename": "runtime.txt",
+        "evidence_type": "configuration",
+        "text": "The configured request timeout is 500 milliseconds."
+      }
+    ]
+  },
+  {
+    "id": "unrelated-numbers",
+    "description": "Different numbers refer to different topics and must not be compared.",
+    "expected_finding": false,
+    "documents": [
+      {
+        "filename": "capacity.txt",
+        "evidence_type": "requirement",
+        "text": "The service supports 80 concurrent sessions."
+      },
+      {
+        "filename": "upload.txt",
+        "evidence_type": "configuration",
+        "text": "The maximum upload size is 50 MB."
+      }
+    ]
+  },
+  {
+    "id": "non-numeric-security-gap",
+    "description": "Requirement demands expired-token rejection but implementation evidence only describes signature validation; a reasoning-capable analyzer should investigate the missing expiry check.",
+    "expected_finding": true,
+    "documents": [
+      {
+        "filename": "auth-requirements.txt",
+        "evidence_type": "requirement",
+        "text": "R-014: The API must reject expired access tokens."
+      },
+      {
+        "filename": "auth-implementation.txt",
+        "evidence_type": "implementation",
+        "text": "The API validates the access-token signature and issuer before accepting the request. Token expiry handling is not described in this implementation note."
+      }
+    ]
+  }
+]

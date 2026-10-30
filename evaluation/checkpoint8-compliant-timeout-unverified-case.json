@@ -1,0 +1,29 @@
+[
+  {
+    "id": "checkpoint8-compliant-timeout-unverified-test",
+    "description": "The timeout configuration and documented behavior comply with the requirement, but the acceptance test was not run. RealityCheck should report an unverified behavior, not a failure or mismatch.",
+    "expected_finding": true,
+    "documents": [
+      {
+        "filename": "timeout-requirement.txt",
+        "evidence_type": "requirement",
+        "text": "The worker must enforce a hard timeout of 45 seconds per file. When the timeout is reached, the job must enter a terminal failed state and the user must receive a clear, user-readable error."
+      },
+      {
+        "filename": "worker-config.txt",
+        "evidence_type": "configuration",
+        "text": "WORKER_TIMEOUT_SECONDS=45"
+      },
+      {
+        "filename": "job-manager-implementation.txt",
+        "evidence_type": "implementation",
+        "text": "If the worker times out, the job manager records a terminal failed state and displays: 'Document processing exceeded the 45-second limit. Please try a smaller file.'"
+      },
+      {
+        "filename": "acceptance-test-results.txt",
+        "evidence_type": "observation",
+        "text": "The acceptance test for the 45-second timeout, terminal failed state, and user-visible error was not run. No runtime observation is available to confirm this behavior."
+      }
+    ]
+  }
+]

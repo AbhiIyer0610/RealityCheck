@@ -1,0 +1,28 @@
+MERIDIAN DOCUMENT INTAKE
+Product Requirements and Acceptance Criteria
+Document ID: PRD-42 | Version: 2.1 | Status: Approved | Date: 2026-10-10
+DEMO DATA NOTICE: Entire document is fictional and created for software demonstration.
+
+SCOPE
+These acceptance criteria apply to the production document-ingestion API and worker service for release 2026.10.
+
+R-01 — HARD PROCESSING TIMEOUT
+Each file-processing attempt must stop after 45 seconds. The 45-second value is a hard limit, not a warning threshold. A retry must not extend the lifetime of the same submitted job beyond the hard limit.
+
+R-02 — TERMINAL JOB STATE
+When the 45-second hard timeout is reached, the job must transition to FAILED and remain terminal. Automatic retries after this timeout are not permitted for release 2026.10. The job status API must return the terminal state.
+
+R-03 — USER-FACING ERROR
+When the timeout occurs, the UI must display exactly: “Processing exceeded the 45-second limit. Please upload a smaller file or retry with a supported format.” A generic error without the cause is not acceptable.
+
+R-04 — UPLOAD SIZE
+The maximum upload size is 50 MB per file. Requests exceeding the limit must be rejected before creating a processing job and return HTTP 413.
+
+R-05 — VERIFICATION
+Before general availability, QA must run timeout tests and upload-boundary tests and retain actual outcomes, timestamps, and job IDs. A test plan or expected result is not proof that the test ran or passed.
+
+ACCEPTANCE EXAMPLES
+- A 44-second processing attempt is not terminated solely because of the hard timeout.
+- A 46-second processing attempt reaches terminal FAILED, does not retry, and displays the approved error message.
+- A 51 MB upload is rejected with HTTP 413 before a job is created.
+- A QA record must contain observed results, not only “expected: FAILED.”

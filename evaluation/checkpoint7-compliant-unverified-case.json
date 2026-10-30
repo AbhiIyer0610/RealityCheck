@@ -1,0 +1,24 @@
+[
+  {
+    "id": "checkpoint7-compliant-timeout-unverified-test",
+    "description": "The documented worker timeout matches the 45-second requirement, but the acceptance test was not run. RealityCheck should identify the verification gap without inventing a configuration mismatch or claiming the behavior failed.",
+    "expected_finding": true,
+    "documents": [
+      {
+        "filename": "requirements.txt",
+        "evidence_type": "requirement",
+        "text": "R-010: Document extraction shall have a hard processing timeout of 45 seconds per file. A timeout shall result in a terminal failed job state and a user-readable error."
+      },
+      {
+        "filename": "implementation-notes.txt",
+        "evidence_type": "implementation",
+        "text": "PDF extraction runs in a worker process. The worker timeout is configured to 45 seconds. If the worker times out, the job manager records a terminal failed state and displays the message: 'Document processing exceeded the 45-second limit. Please try a smaller file.'"
+      },
+      {
+        "filename": "test-observations.txt",
+        "evidence_type": "observation",
+        "text": "OBS-010: The slow-extraction acceptance fixture has not been run. No runtime observation is available to confirm the timeout, terminal state, or user-visible error behavior."
+      }
+    ]
+  }
+]

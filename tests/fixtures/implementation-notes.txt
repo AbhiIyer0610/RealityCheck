@@ -1,0 +1,29 @@
+UPLOAD SERVICE — IMPLEMENTATION NOTES
+Document: implementation-notes.txt
+Version: 1.2
+Environment: Production configuration snapshot
+Status: Engineering notes; not a formal acceptance record
+Purpose: Synthetic companion source for the RealityCheck demo.
+
+UPLOAD HANDLING
+The API currently checks the file extension and accepts .txt and .pdf. Unsupported extensions return HTTP 400. The upload route reads the uploaded content into a temporary in-memory buffer before the extraction job is enqueued.
+
+The configured upload size limit is 50 MB. The limit is currently checked in the upload route before the extraction job starts.
+
+PROCESSING
+PDF extraction runs in a worker process. The worker timeout is configured to 60 seconds. If the worker times out, the job manager records a failed state with a generic message. Automatic retries are disabled.
+
+JOB STATUS
+The job manager assigns a UUID to each accepted upload. The API currently returns queued, processing, completed, and failed states.
+
+RETENTION
+Artifacts are stored under the local data directory. A cleanup task is configured to delete artifacts after 10 days. The notes do not establish whether the cleanup task has run successfully in production.
+
+LOGGING AND ERRORS
+The upload route logs the original filename, job identifier, and validation outcome. The notes do not specify whether request bodies, authorization headers, or API keys are filtered by the logging layer. The generic worker failure message is returned to the user.
+
+TRACEABILITY AND PROVIDER MODE
+Finding records contain source document identifiers and evidence identifiers. The offline provider is configured with ANALYSIS_PROVIDER=offline in the demo environment and returns deterministic simulated analysis. The production provider configuration was not included in this snapshot.
+
+IMPLEMENTATION LIMITATIONS
+This document is an implementation description, not a test report. It does not prove that each described behavior was exercised or verified. Some values may differ from the deployed runtime configuration.

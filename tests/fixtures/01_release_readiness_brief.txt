@@ -1,0 +1,37 @@
+MERIDIAN DOCUMENT INTAKE
+Release Readiness Brief — Release 2026.10
+Document ID: MRD-RRB-026 | Version: 1.3 | Owner: Platform Reliability | Date: 2026-10-22
+DEMO DATA NOTICE: Fictional organization, system, people/roles, dates, and test results created for RealityCheck demonstration.
+
+EXECUTIVE DECISION
+The release is marked “ready for staged rollout” in the release tracker. This decision is conditional on reconciling the timeout and upload-limit differences described below. This brief combines excerpts from the approved product requirement, implementation review, deployment snapshot, and QA execution log; the sections have different evidence roles.
+
+1. APPROVED REQUIREMENTS (PRD-42, approved 2026-10-10)
+R-01 — Each file-processing attempt must enforce a hard timeout of 45 seconds.
+R-02 — When the hard timeout is reached, the job must enter a terminal FAILED state. The system must not automatically retry a timed-out attempt.
+R-03 — The user must see: “Processing exceeded the 45-second limit. Please upload a smaller file or retry with a supported format.”
+R-04 — The maximum accepted upload size is 50 MB per file. Larger uploads must be rejected before processing starts with HTTP 413.
+R-05 — The acceptance suite must verify R-01 through R-04 before general availability.
+
+2. IMPLEMENTATION REVIEW (DESIGN-INT-17, reviewed 2026-10-18)
+The worker timeout is currently described as 60 seconds. A timeout raises WorkerTimeout, after which the job manager schedules up to three retries with a 30-second backoff. During retry, the job remains in RETRYING. The UI error mapping uses the generic message “Processing failed.” The design review does not include a runtime demonstration that the exact user-facing message is displayed.
+
+3. PRODUCTION CONFIGURATION SNAPSHOT (DEPLOY-PROD-2026-10-20)
+WORKER_TIMEOUT_SECONDS=60
+RETRY_ON_TIMEOUT=true
+MAX_TIMEOUT_RETRIES=3
+MAX_UPLOAD_SIZE_MB=100
+ENVIRONMENT=production
+This is a captured configuration file. The snapshot alone does not establish which values a running process loaded.
+
+4. QA EXECUTION SUMMARY (QA-RUN-881, executed 2026-10-21)
+The timeout acceptance test was executed three times using a synthetic 75 MB PDF. Recorded processing durations were 61.4 seconds, 62.0 seconds, and 61.7 seconds. At 90 seconds after submission, the job status was RETRYING in all three runs. The test operator recorded the UI message as “Processing failed.” The upload endpoint accepted the 75 MB fixture and returned HTTP 202. The test report marks R-01, R-02, R-03, and R-04 as FAIL. These are reported observations from the described test run, not a complete test of all possible files or environments.
+
+5. OPEN RELEASE ACTIONS
+- Confirm the required timeout and retry policy with the product owner, then align implementation and production configuration.
+- Verify terminal-state behavior under a timed-out worker, including that retries do not continue when the approved requirement prohibits them.
+- Replace the generic UI message with the approved message if R-03 remains the accepted requirement.
+- Align the server-side upload limit with the approved 50 MB limit and test rejection before processing.
+- Rerun the acceptance suite and attach the resulting run ID before general availability.
+
+END OF BRIEF

@@ -1,0 +1,18 @@
+UPLOAD SERVICE — CONFIGURATION SNAPSHOT
+Document: production-config.txt
+Snapshot: 2026-10-27 16:00 UTC
+Environment: Production
+Status: Synthetic configuration extract
+
+UPLOAD_MAX_SIZE_MB=50
+EXTRACTION_TIMEOUT_SECONDS=60
+ARTIFACT_RETENTION_DAYS=10
+ANALYSIS_PROVIDER=offline
+LOG_REQUEST_BODY=false
+LOG_AUTH_HEADERS=false
+
+Notes:
+- Values are synthetic and included for demo purposes.
+- The configuration file does not prove that the deployed process loaded these exact values.
+- The configuration uses MB but does not specify whether it means decimal MB or MiB.
+- ANALYSIS_PROVIDER=offline would normally imply simulated analysis, not live model reasoning.

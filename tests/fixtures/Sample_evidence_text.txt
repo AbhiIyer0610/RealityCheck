@@ -1,0 +1,52 @@
+REALITYCHECK SAMPLE EVIDENCE DOCUMENT
+====================================
+
+Document ID: RC-DEMO-001
+Document Type: Internal product requirement
+Version: 1.0
+Owner: Product Engineering
+Status: Approved for demo
+Last Updated: 2026-10-15
+
+1. PURPOSE
+RealityCheck helps teams compare stated requirements with implementation details and observed behavior. It should preserve the source of each finding and clearly distinguish verified facts from assumptions.
+
+2. REQUIREMENTS
+R-001: The application must accept plain-text (.txt) and PDF (.pdf) evidence files.
+R-002: The maximum upload size is 80 MB by default.
+R-003: After an upload is accepted, the API must return a job identifier without waiting for extraction to finish.
+R-004: The user must be able to check a job's status.
+R-005: Extracted evidence must include provenance that identifies where the evidence came from.
+R-006: If extraction is still running, the evidence endpoint should report that the evidence is not ready.
+R-007: Completed job records and their stored artifacts should be removed after the configured retention period.
+
+3. IMPLEMENTATION NOTES
+The current demo backend uses FastAPI for HTTP endpoints.
+Uploaded artifacts are stored locally under the configured data directory.
+Extraction jobs are tracked in a SQLite database.
+A bounded in-process queue limits how many pending extraction jobs can wait at once.
+The text extractor decodes uploaded text as UTF-8.
+The PDF extractor uses Docling through a process-based runtime.
+The React frontend is served by Vite during local development.
+
+4. OBSERVED DEMO BEHAVIOR
+OBS-001: Uploading a valid UTF-8 .txt file returns an accepted response containing a job ID.
+OBS-002: The frontend polls the job-status endpoint until the job reaches a terminal status.
+OBS-003: When extraction succeeds, the evidence view displays extracted text and provenance information.
+OBS-004: Uploading an unsupported file extension is rejected by the API.
+OBS-005: If the pending-job queue is full, the API responds with a service-unavailable error instead of accepting unlimited work.
+
+5. KNOWN LIMITATIONS
+L-001: The demo is intended for local development and does not currently provide user authentication.
+L-002: The job store and queue are designed for a single API process.
+L-003: Complex diagrams and handwritten notes are outside the scope of this sample.
+L-004: Observed behavior listed in section 4 is illustrative sample content; confirm each behavior against the running application before treating it as verified.
+
+6. REVIEW QUESTIONS
+Q-001: Which requirements can be checked directly against the API implementation?
+Q-002: Which implementation notes describe architecture rather than a user-visible guarantee?
+Q-003: Which observations should be tested before being marked as verified?
+Q-004: What evidence would be needed to verify the configured retention period?
+Q-005: Which known limitations create the greatest risk if this demo is exposed beyond localhost?
+
+END OF SAMPLE

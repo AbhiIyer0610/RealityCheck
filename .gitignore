@@ -1,0 +1,42 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+
+# PyCharm
+.idea/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS
+.DS_Store
+Thumbs.db
+# Local artifact uploads and SQLite database
+/data/
+
+# React frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Local development history and update patches
+RealityCheck-finding-visualizations-history.patch
+checkpoint8_prompt.patch
+reconciliation-prompt-change.txt
+
+# Large manual UI upload test fixture (kept locally)
+tests/fixtures/Sample_evidence_oversized_pdf.pdf

@@ -1,0 +1,34 @@
+MERIDIAN DOCUMENT INTAKE
+QA Execution Report — Timeout and Upload Boundary
+Document ID: QA-RUN-881 | Test suite: release-2026.10-acceptance | Executed: 2026-10-21
+DEMO DATA NOTICE: Entire document is fictional and created for software demonstration.
+
+ENVIRONMENT
+Release: mdi-2026.10-rc3
+Environment: staging configured from the production candidate bundle
+Worker timeout in configuration export: 60 seconds
+Test operator: Platform QA rotation
+
+TEST QA-TIMEOUT-04 — JOB TIMEOUT
+Input: synthetic PDF designed to keep processing active beyond 45 seconds.
+Runs: 3
+Observed durations: 61.4 seconds; 62.0 seconds; 61.7 seconds.
+At 90 seconds after each submission, the job API returned status RETRYING.
+Observed UI message in each run: “Processing failed.”
+Expected under PRD-42: terminal FAILED state after 45 seconds, no automatic retry, and the approved user-readable timeout message.
+Result recorded by QA: FAIL.
+
+TEST QA-UPLOAD-07 — MAXIMUM FILE SIZE
+Input: synthetic 75 MB PDF.
+Observed response: HTTP 202 Accepted; a processing job was created.
+Expected under PRD-42: HTTP 413 before a job is created for any file larger than 50 MB.
+Result recorded by QA: FAIL.
+
+SCOPE AND LIMITATIONS
+These records describe the three timeout runs and one upload-boundary run listed above. They do not establish behavior for every file type, worker, region, or release. No passing rerun after a fix is attached to this report.
+
+RECOMMENDED FOLLOW-UP
+1. Align timeout, retry, and upload-size values with the approved requirement or obtain an approved requirement change.
+2. Rerun QA-TIMEOUT-04 and QA-UPLOAD-07 after the change.
+3. Capture request IDs, job IDs, actual state transitions, elapsed times, HTTP status, and the rendered UI message.
+4. Attach the passing run report to the release approval record.

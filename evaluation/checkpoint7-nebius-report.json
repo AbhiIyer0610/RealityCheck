@@ -1,0 +1,176 @@
+{
+  "benchmark_name": "RealityCheck comparison benchmark",
+  "benchmark_version": 1,
+  "provider": "nebius",
+  "scope_note": "Synthetic regression cases; results are a small curated regression signal, not a measure of real-world accuracy.",
+  "case_count": 1,
+  "counts": {
+    "TP": 1,
+    "FP": 0,
+    "TN": 0,
+    "FN": 0
+  },
+  "precision": 1.0,
+  "recall": 1.0,
+  "specificity": 0.0,
+  "finding_count_total": 3,
+  "citation_reference_validity": 1.0,
+  "results": [
+    {
+      "id": "checkpoint6-acceptance-expectation-is-not-a-result",
+      "description": "An acceptance test states an expected timeout outcome, while observations explicitly say the test was not run. Compare requirement and implementation/configuration without treating the expectation as an actual result.",
+      "expected_finding": true,
+      "detected_finding": true,
+      "result": "TP",
+      "finding_count": 3,
+      "citation_references_valid": true,
+      "finding_titles": [
+        "Worker timeout misalignment with requirement",
+        "Generic error message violates user-readable requirement",
+        "Acceptance criterion lacks verification"
+      ],
+      "claims": [
+        {
+          "claim_id": "a8d3e8b6-0924-48d5-8919-50c5421b2a96",
+          "text": "Document extraction shall have a hard processing timeout of 45 seconds per file.",
+          "category": "requirement",
+          "kind": "explicit",
+          "evidence_ids": [
+            "04013971-2e2f-40f7-bad4-5bdca2ab3e96"
+          ],
+          "confidence": 1.0
+        },
+        {
+          "claim_id": "f8e0f1ae-8e59-406d-a783-68c7b789fce2",
+          "text": "A timeout shall result in a terminal failed job state and a user-readable error.",
+          "category": "requirement",
+          "kind": "explicit",
+          "evidence_ids": [
+            "04013971-2e2f-40f7-bad4-5bdca2ab3e96"
+          ],
+          "confidence": 1.0
+        },
+        {
+          "claim_id": "1f7020dd-d9a8-479e-b9ef-758541f8b43e",
+          "text": "Submit a PDF fixture that takes longer than 45 seconds to extract. Expected result: a terminal failed job state and a user-readable timeout error.",
+          "category": "requirement",
+          "kind": "explicit",
+          "evidence_ids": [
+            "58b0da8e-e731-478c-bd5b-4722813771ea"
+          ],
+          "confidence": 1.0
+        },
+        {
+          "claim_id": "e402e9b1-0208-4a36-8ff4-bfb3e0706f4e",
+          "text": "PDF extraction runs in a worker process.",
+          "category": "implementation",
+          "kind": "explicit",
+          "evidence_ids": [
+            "6c9516bf-7b4f-4c95-af3f-af3fdb38d86b"
+          ],
+          "confidence": 1.0
+        },
+        {
+          "claim_id": "9bf2ccf2-58f2-457e-ae3c-ed0140604739",
+          "text": "The worker timeout is configured to 60 seconds.",
+          "category": "configuration",
+          "kind": "explicit",
+          "evidence_ids": [
+            "6c9516bf-7b4f-4c95-af3f-af3fdb38d86b"
+          ],
+          "confidence": 1.0
+        },
+        {
+          "claim_id": "737339c5-d91d-43c0-a076-3706f5b11c95",
+          "text": "If the worker times out, the job manager records a failed state with a generic message.",
+          "category": "implementation",
+          "kind": "explicit",
+          "evidence_ids": [
+            "6c9516bf-7b4f-4c95-af3f-af3fdb38d86b"
+          ],
+          "confidence": 1.0
+        },
+        {
+          "claim_id": "50146bec-571d-4ac7-9fc8-240ed0a58042",
+          "text": "No slow-extraction fixture was run.",
+          "category": "observation",
+          "kind": "explicit",
+          "evidence_ids": [
+            "c7a9493c-42a8-48a0-bed4-f7c72c873e7e"
+          ],
+          "confidence": 1.0
+        },
+        {
+          "claim_id": "0066e8a1-ab4c-4059-8239-36b64d2ffd04",
+          "text": "The 45-second acceptance criterion remains unverified by this observation set.",
+          "category": "observation",
+          "kind": "explicit",
+          "evidence_ids": [
+            "c7a9493c-42a8-48a0-bed4-f7c72c873e7e"
+          ],
+          "confidence": 1.0
+        }
+      ],
+      "findings": [
+        {
+          "finding_id": "21ecb1ca-452c-4ce8-94c4-b6170cc060fe",
+          "title": "Worker timeout misalignment with requirement",
+          "explanation": "Requirement R-003 specifies a hard processing timeout of 45 seconds per file, but implementation note indicates the worker timeout is configured to 60 seconds. This means files taking between 45-60 seconds would not trigger a timeout at the worker level, violating the requirement's hard 45-second limit.",
+          "status": "reality_gap",
+          "confidence": 0.9,
+          "evidence_ids": [
+            "04013971-2e2f-40f7-bad4-5bdca2ab3e96",
+            "6c9516bf-7b4f-4c95-af3f-af3fdb38d86b"
+          ],
+          "claim_ids": [
+            "a8d3e8b6-0924-48d5-8919-50c5421b2a96",
+            "9bf2ccf2-58f2-457e-ae3c-ed0140604739"
+          ],
+          "recommendation": "Adjust worker timeout configuration to 45 seconds to align with requirement.",
+          "impact": "Jobs exceeding 45 seconds but under 60 seconds would not fail as required, leading to delayed failure detection and potential resource exhaustion.",
+          "alternative_explanation": "The worker timeout might be a separate safeguard, with an additional 45-second enforcement layer not mentioned in the implementation notes.",
+          "validation_test": "Configure a test file that takes 50 seconds to extract and observe whether it fails within 45 seconds as required."
+        },
+        {
+          "finding_id": "a0cba005-82d0-4521-88f6-354de7b8c9bf",
+          "title": "Generic error message violates user-readable requirement",
+          "explanation": "Requirement R-003 mandates a user-readable error on timeout, but implementation note states the job manager records a failed state with a generic message upon worker timeout. A generic message may not be sufficiently user-readable as required.",
+          "status": "reality_gap",
+          "confidence": 0.85,
+          "evidence_ids": [
+            "04013971-2e2f-40f7-bad4-5bdca2ab3e96",
+            "6c9516bf-7b4f-4c95-af3f-af3fdb38d86b"
+          ],
+          "claim_ids": [
+            "f8e0f1ae-8e59-406d-a783-68c7b789fce2",
+            "737339c5-d91d-43c0-a076-3706f5b11c95"
+          ],
+          "recommendation": "Ensure timeout errors include specific, user-readable details such as 'Processing exceeded 45-second limit'.",
+          "impact": "Users may receive unhelpful error messages, hindering troubleshooting and reducing system usability.",
+          "alternative_explanation": "The generic message might be supplemented with user-readable details in a layer not described in the implementation notes.",
+          "validation_test": "Trigger a timeout and verify the error message presented to the user is specific and actionable."
+        },
+        {
+          "finding_id": "731945ee-34e7-4407-90e8-91bf86651b35",
+          "title": "Acceptance criterion lacks verification",
+          "explanation": "Acceptance test AT-005 requires verifying a PDF fixture taking longer than 45 seconds results in a terminal failed job state and user-readable timeout error, but observation OBS-005 confirms no slow-extraction fixture was run, leaving the criterion unverified.",
+          "status": "uncertain",
+          "confidence": 0.9,
+          "evidence_ids": [
+            "58b0da8e-e731-478c-bd5b-4722813771ea",
+            "c7a9493c-42a8-48a0-bed4-f7c72c873e7e"
+          ],
+          "claim_ids": [
+            "1f7020dd-d9a8-479e-b9ef-758541f8b43e",
+            "50146bec-571d-4ac7-9fc8-240ed0a58042",
+            "0066e8a1-ab4c-4059-8239-36b64d2ffd04"
+          ],
+          "recommendation": "Execute the slow-extraction fixture test to verify compliance with AT-005.",
+          "impact": "Without verification, there is no evidence the system meets the timeout behavior requirement, risking undetected non-compliance.",
+          "alternative_explanation": "The test may have been run in an environment not captured by this observation set.",
+          "validation_test": "Run the slow-extraction fixture test and record whether it produces a terminal failed state with a user-readable timeout error."
+        }
+      ]
+    }
+  ]
+}

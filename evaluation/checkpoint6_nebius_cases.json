@@ -1,0 +1,29 @@
+[
+  {
+    "id": "checkpoint6-acceptance-expectation-is-not-a-result",
+    "description": "An acceptance test states an expected timeout outcome, while observations explicitly say the test was not run. Compare requirement and implementation/configuration without treating the expectation as an actual result.",
+    "expected_finding": true,
+    "documents": [
+      {
+        "filename": "requirements.txt",
+        "evidence_type": "requirement",
+        "text": "R-003: Document extraction shall have a hard processing timeout of 45 seconds per file. A timeout shall result in a terminal failed job state and a user-readable error."
+      },
+      {
+        "filename": "acceptance-tests.txt",
+        "evidence_type": "requirement",
+        "text": "AT-005: Submit a PDF fixture that takes longer than 45 seconds to extract. Expected result: a terminal failed job state and a user-readable timeout error."
+      },
+      {
+        "filename": "implementation-notes.txt",
+        "evidence_type": "implementation",
+        "text": "PDF extraction runs in a worker process. The worker timeout is configured to 60 seconds. If the worker times out, the job manager records a failed state with a generic message."
+      },
+      {
+        "filename": "test-observations.txt",
+        "evidence_type": "observation",
+        "text": "OBS-005: No slow-extraction fixture was run. The 45-second acceptance criterion remains unverified by this observation set."
+      }
+    ]
+  }
+]
