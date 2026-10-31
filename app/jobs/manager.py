@@ -241,7 +241,31 @@ class JobManager:
         return deleted
 
     async def delete_history_comparison(self, comparison_id: UUID) -> bool:
-        return await self._store.delete_comparison(comparison_id)
+        """Delete a comparison and source jobs no longer referenced by saved comparisons."""
+        comparison = await self._store.get_comparison(comparison_id)
+        if comparison is None:
+            return False
+
+        deleted = await self._store.delete_comparison(comparison_id)
+        if not deleted:
+            return False
+
+        remaining_comparisons = await self._store.list_comparisons()
+        referenced_job_ids = {
+            document.job_id
+            for saved_comparison in remaining_comparisons
+            for document in saved_comparison.documents
+        }
+        for document in comparison.documents:
+            if document.job_id in referenced_job_ids:
+                continue
+            job = await self._store.get_job(document.job_id)
+            if job is None or not job.status.is_terminal:
+                continue
+            if await self._store.delete_completed_job(document.job_id):
+                await asyncio.to_thread(_delete_file_if_present, job.artifact_path)
+
+        return True
 
     async def get_evidence(self, job_id: UUID) -> StoredJob | None:
         return await self._store.get_job(job_id)
